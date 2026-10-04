@@ -1,0 +1,202 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MelloCloneApp());
+}
+
+class MelloCloneApp extends StatelessWidget {
+  const MelloCloneApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Mello Clone',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFFCE4EC), // لون خلفية وردي فاتح جداً
+        fontFamily: 'Arial',
+      ),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // قائمة المهام
+  List<Map<String, dynamic>> tasks = [
+    {"title": "مذاكرة 3 ساعات", "done": false},
+    {"title": "شرب 2 لتر مياه", "done": true},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Mello App"),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // 1. بروفايل المستخدم بشكل ويندوز قديم
+            const RetroProfileCard(),
+            const SizedBox(height: 20),
+            
+            // 2. قائمة المهام (To-Do List)
+            const Text("My To-Do List", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black26),
+                boxShadow: const [BoxShadow(color: Colors.black12, offset: Offset(2, 2))],
+              ),
+              child: Column(
+                children: tasks.map((task) {
+                  return CheckboxListTile(
+                    title: Text(
+                      task['title'],
+                      style: TextStyle(
+                        decoration: task['done'] ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    value: task['done'],
+                    activeColor: Colors.pinkAccent,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        task['done'] = value!;
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ويدجت مخصصة لشكل النافذة القديمة
+class RetroProfileCard extends StatelessWidget {
+  const RetroProfileCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.black, width: 1.5),
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, offset: Offset(4, 4), blurRadius: 0),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // شريط العنوان (Title Bar)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            color: Colors.grey[200],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("_.exe", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                Row(
+                  children: [
+                    _buildWindowButton(Colors.red[400]!),
+                    _buildWindowButton(Colors.yellow[400]!),
+                    _buildWindowButton(Colors.green[400]!),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          
+          // محتوى النافذة
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // صورة البروفايل
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.purple[50],
+                    border: Border.all(color: Colors.black12),
+                  ),
+                  child: const Icon(Icons.person, size: 50, color: Colors.purpleAccent),
+                ),
+                const SizedBox(width: 12),
+                
+                // البيانات
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildRetroField("Full Name", "Cinnamoroll Fan"),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Expanded(child: _buildRetroField("Grade", "111")),
+                          const SizedBox(width: 6),
+                          Expanded(child: _buildRetroField("Birthday", "July 19")),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // زر صغير للشريط العلوي
+  Widget _buildWindowButton(Color color) {
+    return Container(
+      margin: const EdgeInsets.only(left: 4),
+      width: 10,
+      height: 10,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.black12),
+      ),
+    );
+  }
+
+  // حقل نصي بشكل قديم
+  Widget _buildRetroField(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 10, color: Colors.black54)),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.purple[50], // لون الحقل زي الصور
+            border: Border.all(color: Colors.black12),
+          ),
+          child: Text(value, style: const TextStyle(fontSize: 12)),
+        ),
+      ],
+    );
+  }
+}
